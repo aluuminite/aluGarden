@@ -67,6 +67,7 @@ def addPlant():
     xcheck = False
     ycheck = False
     tcheck = False
+    ccheck = False
 
     # Display the plant grid UI
     print("-" * 41)  # Top border of the grid
@@ -77,41 +78,45 @@ def addPlant():
         print("-" * 41)  # Row separator
 
     # Loop until valid X, Y, and plant type are chosen
-    while xcheck == False or ycheck == False or tcheck == False:
+    while xcheck == False or ycheck == False or tcheck == False or ccheck == False:
 
-        # Get valid X coordinate
-        while xcheck == False:
-            newplantX = get_int_input("New Plant X, e.g. 3: ")
+        while ccheck == False:
+            # Get valid X coordinate
+            while xcheck == False:
+                newplantX = get_int_input("New Plant X, e.g. 3:")
 
-            # Check if input is in the allowed range
-            if newplantX < 11 and newplantX > 0:
-                xcheck = True
+                # Check if input is in the allowed range
+                if newplantX < 11 and newplantX > 0:
+                    xcheck = True
+                else:
+                    print("Input coords 1-10")
+
+            # Get valid Y coordinate
+            while ycheck == False:
+                newplantY = get_int_input("New Plant Y, e.g. 3:")
+
+                # Check if input is in the allowed range
+                if newplantY < 11 and newplantY > 0:
+                    ycheck = True
+                else:
+                    print("Input coords 1-10")
+
+            if plants[toIndex(newplantX, newplantY)] == " ":
+                ccheck = True
             else:
-                print("Input coords 1-10")
-
-        # Get valid Y coordinate
-        while ycheck == False:
-            newplantY = get_int_input("New Plant Y, e.g. 3:")
-
-            # Check if input is in the allowed range
-            if newplantY < 11 and newplantY > 0:
-                ycheck = True
-            else:
-                print("Input coords 1-10")
+                print("Choose an empty tile")
+                xcheck = False
+                ycheck = False
 
         # Get valid plant type
         while tcheck == False:
             newplantType = get_str_input("New Plant type, e.g. W")
 
-            # Check if chosen tile is empty
-            if plants[toIndex(newplantX, newplantY)] == " ":
-                # Check if plant type is valid
-                if newplantType in vplants:
-                    tcheck = True
-                else:
-                    print("You have to choose one of these plants: ", vplants)
+            # Check if plant type is valid
+            if newplantType.upper() in vplants:
+                tcheck = True
             else:
-                print("Choose an empty tile!")
+                print("You have to choose one of these plants: ", vplants)
 
     # Check if user requested rules instead of a plant type
     if newplantType == "Rules":
@@ -129,7 +134,7 @@ while counter < 15:
 
     update()
     addPlant()
-    rounds += 1
     if rounds % 7 == 0:
         print("Second Turn, round%7 == 0")
         addPlant()
+    rounds += 1
