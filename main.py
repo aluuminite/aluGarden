@@ -1,9 +1,41 @@
 from gridMath import toIndex, toX, toY
+import turtle
 
 plants = [" "] * 100
 plants[toIndex(2, 2)] = "W"
 counter, money, rounds = 0, 0, 1
 vplants = ["W", "P", "C"]
+SIZE = 64
+ROWS = 10
+COLS = 10
+color_map = {
+    " ": "white",       # empty
+    "W": "yellow",      # wheat
+    "P": "goldenrod",   # potato
+    "C": "orange"       # carrot
+}
+
+t = turtle.Turtle()
+t.speed(0)
+t.hideturtle()
+
+def toIndex(x, y):
+    return (y - 1) * 10 + (x - 1)
+def toX(index):
+    return index%10+1
+def toY(index):
+    return index//10+1
+def index_to_position(index):
+    row = index // 10
+    col = index % 10
+
+    start_x = -COLS * SIZE / 2
+    start_y = ROWS * SIZE / 2
+
+    x = start_x + col * SIZE
+    y = start_y - row * SIZE
+
+    return x, y
 
 
 def get_int_input(prompt):
@@ -56,6 +88,25 @@ def update():
     #Add total revenue
     money += revenue
 
+def draw():
+    t.clear()
+    for index in range(len(plants)):
+        x, y = index_to_position(index)
+        plant = plants[index]
+
+        t.penup()
+        t.goto(x, y)
+        t.setheading(0)  # reset heading
+        t.pendown()
+
+        t.fillcolor(color_map.get(plant, "white"))
+        t.begin_fill()
+        for _ in range(4):
+            t.forward(SIZE)
+            t.right(90)
+        t.end_fill()
+
+
 
 # Whole process to add a new plant and display the UI for it
 def addPlant():
@@ -68,14 +119,6 @@ def addPlant():
     ycheck = False
     tcheck = False
     ccheck = False
-
-    # Display the plant grid UI
-    print("-" * 41)  # Top border of the grid
-    for i in range(0, 100, 10):  # Loop through rows (assuming grid size 10x10)
-        for plant in plants[i:i + 10]:  # Get 10 plants per row
-            print("|", plant, end=" ")  # Print plant with separator
-        print("|")  # End of row
-        print("-" * 41)  # Row separator
 
     # Loop until valid X, Y, and plant type are chosen
     while xcheck == False or ycheck == False or tcheck == False or ccheck == False:
@@ -133,8 +176,10 @@ def addPlant():
 while counter < 15:
 
     update()
+    draw()
     addPlant()
     if rounds % 7 == 0:
         print("Second Turn, round%7 == 0")
+        draw()
         addPlant()
     rounds += 1
