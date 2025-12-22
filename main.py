@@ -9,7 +9,6 @@ SIZE = 64
 ROWS = 10
 COLS = 10
 color_map = {
-    " ": "white",       # empty
     "W": "yellow",      # wheat
     "P": "goldenrod",   # potato
     "C": "orange"       # carrot
@@ -80,7 +79,7 @@ def update():
 
         #Potato
         if plant == "P":
-            revenue += 8
+            revenue += 0
 
         #Update the index
         index += 1
@@ -88,24 +87,57 @@ def update():
     #Add total revenue
     money += revenue
 
+
+def gridOD(factor):
+    for _ in range(5):
+        t.forward(640)
+        t.right(90*factor)
+        t.forward(64)
+        t.right(90*factor)
+        t.forward(640)
+        t.left(90*factor)
+        t.forward(64)
+        t.left(90*factor)
+
 def draw():
+
     t.clear()
-    for index in range(len(plants)):
-        x, y = index_to_position(index)
-        plant = plants[index]
 
-        t.penup()
-        t.goto(x, y)
-        t.setheading(0)  # reset heading
-        t.pendown()
+    x, y = index_to_position(0)
 
-        t.fillcolor(color_map.get(plant, "white"))
-        t.begin_fill()
-        for _ in range(4):
-            t.forward(SIZE)
-            t.right(90)
-        t.end_fill()
+    t.penup()
+    t.goto(x, y)
+    t.setheading(0)
+    t.pendown()
 
+    gridOD(1)
+
+    t.forward(640)
+
+    for __ in range(2):
+        t.left(90)
+        t.forward(640)
+
+    t.left(90)
+
+    gridOD(-1)
+
+    for _ in range(len(plants)):
+
+        if plants[_] != " ":
+
+            t.color(color_map.get(plants[_]))
+
+            t.penup()
+            t.goto(index_to_position(_+1))
+
+            t.begin_fill()
+            for ___ in range(4):
+                t.forward(64)
+                t.right(90)
+            t.end_fill()
+
+            t.color("black")
 
 
 # Whole process to add a new plant and display the UI for it
@@ -165,7 +197,7 @@ def addPlant():
     if newplantType == "Rules":
         print("W gives 10/r and an extra 10 if round%3==0 and there is atleast 1 adjacent potato")
         print("C gives 7/r + 1 per completed round")
-        print("P gives 8/r")
+        print("P gives 0/r")
         newplantType = " "  # Reset type if rules were requested
 
     # Assign new plant to the list at the correct index
