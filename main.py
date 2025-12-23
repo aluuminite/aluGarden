@@ -1,23 +1,8 @@
-from gridMath import toIndex, toX, toY
 import turtle
 
-plants = [" "] * 100
-plants[toIndex(2, 2)] = "W"
-counter, money, rounds = 0, 0, 1
-vplants = ["W", "P", "C"]
 SIZE = 64
 ROWS = 10
 COLS = 10
-color_map = {
-    "W": "yellow",      # wheat
-    "P": "goldenrod",   # potato
-    "C": "orange"       # carrot
-}
-
-t = turtle.Turtle()
-t.speed(0)
-t.hideturtle()
-
 def toIndex(x, y):
     return (y - 1) * 10 + (x - 1)
 def toX(index):
@@ -25,16 +10,34 @@ def toX(index):
 def toY(index):
     return index//10+1
 def index_to_position(index):
-    row = index // 10
-    col = index % 10
+    row = index // COLS
+    col = index % COLS
 
     start_x = -COLS * SIZE / 2
-    start_y = ROWS * SIZE / 2
+    start_y =  ROWS * SIZE / 2
 
-    x = start_x + col * SIZE
-    y = start_y - row * SIZE
+    x = start_x + col * SIZE + SIZE / 2
+    y = start_y - row * SIZE - SIZE / 2
 
     return x, y
+
+plants = [" "] * 110
+plants[toIndex(3, 3)] = "W"
+counter, money, rounds = 0, 0, 1
+vplants = ["W", "P", "C", "A"]
+SIZE = 64
+ROWS = 10
+COLS = 10
+color_map = {
+    "W": "yellow",      # wheat
+    "P": "goldenrod",   # potato
+    "C": "orange",      # carrot
+    "A": "red"          # apple
+}
+
+t = turtle.Turtle()
+t.speed(0)
+t.hideturtle()
 
 
 def get_int_input(prompt):
@@ -71,7 +74,7 @@ def update():
             revenue += 10
             #Check for potatoes
             if plants[index+1] == "P" or plants[index-1] == "P" or plants[index+10] == "P" or plants[index-10] == "P":
-                revenue += 10
+                revenue += 6
 
         #Carrot
         if plant == "C":
@@ -129,10 +132,12 @@ def draw():
             t.color(color_map.get(plants[_]))
 
             t.penup()
-            t.goto(index_to_position(_+1))
+            t.goto(index_to_position(_))
+            t.setheading(0)
+            t.pendown()
 
             t.begin_fill()
-            for ___ in range(4):
+            for _ in range(4):
                 t.forward(64)
                 t.right(90)
             t.end_fill()
@@ -195,7 +200,7 @@ def addPlant():
 
     # Check if user requested rules instead of a plant type
     if newplantType == "Rules":
-        print("W gives 10/r and an extra 10 if round%3==0 and there is atleast 1 adjacent potato")
+        print("W gives 10/r and an extra 6 if there is atleast 1 adjacent potato")
         print("C gives 7/r + 1 per completed round")
         print("P gives 0/r")
         newplantType = " "  # Reset type if rules were requested
@@ -208,10 +213,14 @@ def addPlant():
 while counter < 15:
 
     update()
+    turtle.tracer(0)
     draw()
+    turtle.update()
     addPlant()
     if rounds % 7 == 0:
         print("Second Turn, round%7 == 0")
+        turtle.tracer(0)
         draw()
+        turtle.update()
         addPlant()
     rounds += 1
