@@ -1,7 +1,7 @@
 import turtle
 from tabnanny import check
 
-from pattern import checkNeighbours, checkAdjacentP
+from pattern import checkNeighbours, checkAdjacentP, checkUniqueAdjacent
 from gridMath import toX, toY, toIndex, indexToPos
 
 SIZE = 64
@@ -12,7 +12,7 @@ COLS = 10
 plants = [" "] * 110
 plants[toIndex(3, 3)] = "W"
 counter, money, rounds = 0, 0, 1
-vplants = ["W", "P", "C", "A"]
+vplants = ["W", "P", "C", "A", "B"]
 SIZE = 64
 ROWS = 10
 COLS = 10
@@ -20,7 +20,8 @@ colorMap = {
     "W": "yellow",      # wheat
     "P": "goldenrod",   # potato
     "C": "orange",      # carrot
-    "A": "red"          # apple
+    "A": "red",         # apple
+    "B": "lime"         # bamboo
 }
 
 t = turtle.Turtle()
@@ -29,6 +30,7 @@ t.hideturtle()
 
 
 def getIntInput(prompt):
+
     while True:
         try:
             value = input(prompt)
@@ -41,6 +43,7 @@ def getIntInput(prompt):
 
 
 def getStrInput(prompt):
+
     while True:
         value = input(prompt).strip()
         if value == "":
@@ -50,6 +53,7 @@ def getStrInput(prompt):
 
 #Calc and apply monetary gains
 def update():
+
     global money
     revenue = 0
     index = 0
@@ -71,9 +75,12 @@ def update():
         if plant == "P":
             revenue += 0
 
+        #Apple
         if plant == "A":
             revenue += 15-checkNeighbours(plants, index)*1.5
 
+        if plant == "B":
+            revenue += 9+checkUniqueAdjacent(plants, index)*2
         #Update the index
         index += 1
 
@@ -82,6 +89,7 @@ def update():
 
 
 def gridOD(factor):
+
     for _ in range(5):
         t.forward(640)
         t.right(90*factor)
