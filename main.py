@@ -207,7 +207,9 @@ def addPlant():
         print("W gives 10/r and an extra 6 if there is atleast 1 adjacent potato")
         print("C gives 7/r + 1 per completed round")
         print("P gives 0/r")
-        print("A gives more money the further it is from other plants")
+        print("A gives more money the further it is from other plants, up to 15 and at least 7.5")
+        print("B gives 9 + 2 per unique neighbour")
+        print("V gives 4 + 0.8 per cluster size")
         newplantType = " "  # Reset type if rules were requested
 
     # Assign new plant to the list at the correct index
