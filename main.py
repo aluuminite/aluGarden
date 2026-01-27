@@ -16,42 +16,57 @@ t.speed(0)
 t.hideturtle()
 
 def getRevenue():
-
-    global money
     revenue = 0
-    index = 0
-    #Run thru plants
-    for plant in plants:
 
-        #Wheat
+    for index, plant in enumerate(plants):
+        count = plants.count(plant)
+
         if plant == "W":
-            revenue += 10
-            #Check for potatoes
+            base = 10
+            penalty = max(0, count - 10) * 0.7
+            value = base - penalty
+
             if checkAdjacentP(plants, index):
-                revenue += 6
+                value += 6
 
-        #Carrot
-        if plant == "C":
-            revenue += 6+2*rounds//3
+            revenue += max(0, value)
 
-        #Potato
-        if plant == "P":
-            revenue += 1
+        elif plant == "C":
+            base = 6 + (2 * rounds // 3) * round(0.97 ** rounds, 1)
+            penalty = max(0, count - 6)  # same as first snippet
+            value = base - penalty
 
-        #Apple
-        if plant == "A":
-            revenue += 15-checkNeighbours(plants, index)*1.5
+            revenue += max(0, value)
 
-        if plant == "B":
-            revenue += 9+checkUniqueAdjacent(plants, index)*2
+        elif plant == "P":
+            # from first snippet: potatoes always cost 1
+            revenue += -1
 
-        if plant == "V":
-            revenue += checkClusterSize(plants, index)*0.7 + 4
+        elif plant == "A":
+            base = 15 - checkNeighbours(plants, index) * 1.5
+            penalty = max(0, count - 4) * 1.5
+            value = base - penalty
 
-        #Update the index
-        index += 1
+            revenue += max(0, value)
 
-    #Add total revenue
+        elif plant == "B":
+            base = 9 + checkUniqueAdjacent(plants, index) * 2
+            penalty = max(0, count - 5) * 0.4
+            value = base - penalty
+
+            revenue += max(0, value)
+
+        elif plant == "V":
+            # first snippet logic:
+            # cluster_size = clusters.get(index, 1)
+            # base = cluster_size * 1.1
+            base = checkClusterSize(plants, index) * 1.1
+            penalty = max(0, count - 7) * 0.2
+            value = base - penalty
+
+            revenue += max(0, value)
+
+
     return revenue
 
 def gridOD(factor):
